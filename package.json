@@ -1,0 +1,12 @@
+{
+  "name": "@ergatejs/badges",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:ergatejs/badges.git",
+  "license": "MIT",
+  "scripts": {},
+  "dependencies": {
+    "@now/node": "^1.0.0",
+    "urllib": "^2.34.1"
+  }
+}
