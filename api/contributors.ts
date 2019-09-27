@@ -60,6 +60,10 @@ export default async (req: NowRequest, res: NowResponse) => {
     size = 64,
   } = req.query;
 
+  if (!owner || !org || !repo) {
+    res.status(401).send('owner | organization | repo is missing!');
+  }
+
   const w = Number(width);
   const p = Number(padding);
   const s = Number(size);
