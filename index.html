@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="https://unpkg.com/normalize.css@8.0.1/normalize.css">
   <title>Ergate.js - Badges</title>
   <style>
-    .html,
+    html,
     body {
       margin: 0;
       padding: 0;
@@ -21,7 +21,13 @@
       margin: 0 auto;
       padding-top: 2em;
     }
-    .container > .contributors{
+
+    .container .title {
+      border-bottom: 1px solid #e8e8e8;
+      padding: 1em 0;
+    }
+
+    .container .contributors {
       width: 1280px;
       max-width: 100%;
       margin: 0 auto;
@@ -31,8 +37,8 @@
 
 <body>
   <div class="container">
-    <h3>Egg.js Contributors</h2>
-      <embed class="contributors" src="https://ergate-badges.now.sh/api/contributors?org=eggjs&repo=egg&width=1280" alt="contributors">
+    <h3 class="title">Egg.js Contributors</h2>
+    <embed class="contributors" src="https://ergate-badges.now.sh/api/contributors?org=eggjs&repo=egg&width=1280" alt="contributors" />
   </div>
 </body>
 
