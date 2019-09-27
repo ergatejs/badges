@@ -3,7 +3,7 @@ import { NowRequest, NowResponse } from '@now/node';
 
 const calcGrid = (width: number, size: number, padding: number, length: number) => {
   if (!width) {
-    return [ null, 1 ];
+    return [ 1, 1 ];
   }
   const cols = Math.floor(width / (size + padding));
   const rows = Math.ceil(length / cols);
@@ -25,7 +25,8 @@ const fetchUsers = async (owner: string | string[], repo: string | string[]) => 
     dataType: 'json',
   });
 
-  return data.map(({ author }) => {
+  return data.map((contributor: any) => {
+    const { author } = contributor;
     const { login, avatar_url } = author;
     return {
       name: login,
