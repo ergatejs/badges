@@ -1,5 +1,11 @@
-import * as urllib from 'urllib';
+import Octokit = require('@octokit/rest');
 import { NowRequest, NowResponse } from '@now/node';
+
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
+const octokit = new Octokit({
+  auth: GITHUB_TOKEN,
+});
 
 const calcGrid = (width: number, size: number, padding: number, length: number) => {
   if (!width) {
@@ -10,7 +16,7 @@ const calcGrid = (width: number, size: number, padding: number, length: number) 
   return [ cols, rows ];
 };
 
-const fetchUsers = async (owner: string | string[], repo: string | string[]) => {
+const fetchUsers = async (owner: string, repo: string) => {
   // const users = ['thonatos', 'atian25', 'dead-horse', 'fengmk2', 'gxcsoccer', 'popomore', 'okoala'];
   // return users.map(name => {
   //   return {
@@ -18,16 +24,16 @@ const fetchUsers = async (owner: string | string[], repo: string | string[]) => 
   //     avatar: `https://github.com/${name}.png`,
   //   };
   // });
+  // // avatar: `data:image/png;base64,${data.toString('base64')}`,
+  // const { data } = await urllib.request(avatar, { followRedirect: true });
 
-  const { data } = await urllib.request(`https://api.github.com/repos/${owner}/${repo}/stats/contributors`, {
-    timeout: 600000,
-    contentType: 'json',
-    dataType: 'json',
+  const { data } = await octokit.repos.listContributors({
+    owner,
+    repo,
   });
 
   return data.map((contributor: any) => {
-    const { author } = contributor;
-    const { login, avatar_url } = author;
+    const { login, avatar_url } = contributor;
     return {
       name: login,
       avatar: avatar_url,
@@ -35,30 +41,17 @@ const fetchUsers = async (owner: string | string[], repo: string | string[]) => 
   });
 };
 
-const fetchAvatar = async (users: Array<any>) => {
-  const links: Array<any> = await Promise.all(
-    users.map(async ({ name, avatar }) => {
-      // const { data } = await urllib.request(avatar, { followRedirect: true });
-      return {
-        name,
-        // data: `data:image/png;base64,${data.toString('base64')}`,
-        data: avatar,
-      };
-    })
-  );
-
-  return links;
+const fetchAvatar = (users: Array<any>) => {
+  return users.map(({ name, avatar }) => {
+    return {
+      name,
+      avatar,
+    };
+  });
 };
 
 export default async (req: NowRequest, res: NowResponse) => {
-  const {
-    org = 'eggjs',
-    repo = 'egg',
-    owner = 'eggjs',
-    width = 216,
-    padding = 8,
-    size = 64,
-  } = req.query;
+  const { org = 'eggjs', repo = 'egg', owner = 'eggjs', width = 216, padding = 8, size = 64 } = req.query;
 
   if (!owner || !org || !repo) {
     res.status(401).send('owner | organization | repo is missing!');
@@ -68,13 +61,13 @@ export default async (req: NowRequest, res: NowResponse) => {
   const p = Number(padding);
   const s = Number(size);
 
-  const users = await fetchUsers(org || owner, repo);
+  const users = await fetchUsers((org || owner) as string, repo as string);
   const links = await fetchAvatar(users);
   const [ cols, rows ] = calcGrid(w, s, p, users.length);
 
   const h = rows * (s + p);
 
-  const hrefs = links.map(({ name, data }, index) => {
+  const hrefs = links.map(({ name, avatar }, index) => {
     const x = index % cols;
     const y = Math.floor(index / cols);
     const px = s * x + p * (x + 1);
@@ -83,7 +76,7 @@ export default async (req: NowRequest, res: NowResponse) => {
     // <a xlink:href="https://github.com/dependabot[bot]" class="opencollective-svg" target="_blank" id="dependabot[bot]"><image x="626" y="74" width="64" height="64" xlink:href="" /></a>
     return `
     <a xlink:href="https://github.com/${name}" class="badges-contributor-svg" target="_blank" id="${name}">
-      <image x="${px}" y="${py}" width="${s}" height="${s}" xlink:href="${data}" />
+      <image x="${px}" y="${py}" width="${s}" height="${s}" xlink:href="${avatar}" />
     </a>
     `;
   });
