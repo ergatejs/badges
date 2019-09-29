@@ -1,2 +1,4 @@
+test/
 .eslintrc.js
 tsconfig.json
+README.md

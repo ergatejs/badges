@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="referrer" content="always">
+  <link rel="stylesheet" href="https://unpkg.com/normalize.css@8.0.1/normalize.css">
+  <title>Ergate.js - Badges</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding-top: 2em;
+    }
+
+    .container .title {
+      border-bottom: 1px solid #e8e8e8;
+      padding: 1em 0;
+    }
+
+    .container .contributors {
+      width: 1280px;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h3 class="title">Egg.js Contributors</h2>
+    <embed class="contributors" src="https://ergate-badges.now.sh/api/contributors?org=eggjs&repo=egg&width=1280" alt="contributors" />
+    <!-- <embed class="contributors" src="http://localhost:3000/api/contributors?org=eggjs&repo=egg&width=1280" alt="contributors" /> -->
+  </div>
+</body>
+
+</html>

@@ -17,28 +17,38 @@ const calcGrid = (width: number, size: number, padding: number, length: number) 
 };
 
 const fetchUsers = async (owner: string, repo: string) => {
-  // const users = ['thonatos', 'atian25', 'dead-horse', 'fengmk2', 'gxcsoccer', 'popomore', 'okoala'];
-  // return users.map(name => {
-  //   return {
-  //     name,
-  //     avatar: `https://github.com/${name}.png`,
-  //   };
-  // });
-  // // avatar: `data:image/png;base64,${data.toString('base64')}`,
-  // const { data } = await urllib.request(avatar, { followRedirect: true });
+  const per_page = 100;
+  let page = 1;
+  let more = true;
+  let users: Array<any> = [];
 
-  const { data } = await octokit.repos.listContributors({
-    owner,
-    repo,
-  });
+  while (more) {
+    const { data } = await octokit.repos.listContributors({
+      owner,
+      repo,
+      page,
+      per_page,
+    });
+    users = users.concat(data);
 
-  return data.map((contributor: any) => {
-    const { login, avatar_url } = contributor;
-    return {
-      name: login,
-      avatar: avatar_url,
-    };
-  });
+    if (data.length === 0) {
+      more = false;
+    } else {
+      page++;
+    }
+  }
+
+  return users
+    .sort((a, b) => {
+      return b.contributions - a.contributions;
+    })
+    .map((contributor: any) => {
+      const { login, avatar_url } = contributor;
+      return {
+        name: login,
+        avatar: avatar_url,
+      };
+    });
 };
 
 const fetchAvatar = (users: Array<any>) => {
