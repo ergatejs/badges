@@ -5,7 +5,8 @@
   "repository": "git@github.com:ergatejs/badges.git",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "render": "node scripts/render"
   },
   "dependencies": {
     "@now/node": "^1.0.0",
@@ -14,6 +15,8 @@
   "devDependencies": {
     "eslint": "^6.4.0",
     "eslint-config-egg": "^7.5.1",
+    "globby": "^10.0.1",
+    "markdown-it": "^10.0.0",
     "typescript": "^3.6.3"
   }
 }

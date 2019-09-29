@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const path = require('path');
+const globby = require('globby');
+
+const md = require('markdown-it')({
+  html: true,
+  linkify: true,
+  typographer: true,
+});
+
+const render = (source, target, metadata) => {
+  const { title = 'Badges Services', description = 'Badges for open source projects - Ergate.js' } = metadata;
+
+  const src = fs.readFileSync(source, { encoding: 'utf8' });
+  const content = md.render(src);
+
+  const html = `
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>${title}</title>
+    <meta name="description" content="${description}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.css">
+    <style>
+    .markdown-body {
+  		box-sizing: border-box;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 2em 1em;
+    }
+
+    .markdown-body .contributors {
+      width: 1280px;
+      max-width: 100%;
+    }
+
+  	@media (max-width: 767px) {
+  	}
+    </style>
+  </head>
+  <body>
+    <article class="markdown-body">
+      ${content}
+    </article>
+  </body>
+  </html>
+  `;
+
+  fs.writeFileSync(target, html, { encoding: 'utf8' });
+};
+
+(async () => {
+  const cwd = process.cwd();
+  const metadatas = {
+    'README.md': {
+      title: 'Badges',
+      description: 'Badges for open source projects powered by Serverless Functions (Zeit).',
+    },
+    'eggjs.md': {
+      title: 'Egg.js - Contributors',
+      description: 'Born to build better enterprise frameworks and apps.',
+    },
+  };
+
+  const paths = await globby('**/**.md', {
+    cwd,
+    ignore: ['!node_modules'],
+  });
+
+  await Promise.all(
+    paths.map(src => {
+      const { dir, base, name } = path.parse(src);
+      const meta = metadatas[base] || {};
+      const target = path.join(cwd, dir, `${name === 'README' ? 'index' : name}.html`);
+      render(src, target, meta);
+    })
+  );
+})();
