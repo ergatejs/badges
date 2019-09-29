@@ -94,7 +94,7 @@ export default async (req: NowRequest, res: NowResponse) => {
   // render
   const content = `
   <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${w}" height="${h}">
-    <style>.badges-contributors-svg { cursor: pointer; }</style>
+    <style>.badges-contributor-svg { cursor: pointer; }</style>
     ${hrefs.join('')}
   </svg>
   `;
