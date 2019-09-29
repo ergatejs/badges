@@ -1,3 +1,5 @@
+import Jimp from 'jimp';
+import * as urllib from 'urllib';
 import Octokit = require('@octokit/rest');
 import { NowRequest, NowResponse } from '@now/node';
 
@@ -46,18 +48,23 @@ const fetchUsers = async (owner: string, repo: string) => {
       const { login, avatar_url } = contributor;
       return {
         name: login,
-        avatar: avatar_url,
+        avatar_url,
       };
     });
 };
 
-const fetchAvatar = (users: Array<any>) => {
-  return users.map(({ name, avatar }) => {
+const fetchAvatar = async (users: Array<any>, size: number) => {
+  return Promise.all(users.map(async ({ name, avatar_url }) => {
+    const { data } = await urllib.request(avatar_url, { timeout: 60000 });
+    const orginal = await Jimp.read(data);
+    const resized = await orginal.resize(size, size).getBase64Async(Jimp.MIME_PNG);
+
     return {
       name,
-      avatar,
+      avatar_url,
+      avatar_data: resized,
     };
-  });
+  }));
 };
 
 export default async (req: NowRequest, res: NowResponse) => {
@@ -72,12 +79,12 @@ export default async (req: NowRequest, res: NowResponse) => {
   const s = Number(size);
 
   const users = await fetchUsers((org || owner) as string, repo as string);
-  const links = await fetchAvatar(users);
+  const links = await fetchAvatar(users, s);
   const [ cols, rows ] = calcGrid(w, s, p, users.length);
 
   const h = rows * (s + p);
 
-  const hrefs = links.map(({ name, avatar }, index) => {
+  const hrefs = links.map(({ name, avatar_data }, index) => {
     const x = index % cols;
     const y = Math.floor(index / cols);
     const px = s * x + p * (x + 1);
@@ -86,7 +93,7 @@ export default async (req: NowRequest, res: NowResponse) => {
     // <a xlink:href="https://github.com/dependabot[bot]" class="opencollective-svg" target="_blank" id="dependabot[bot]"><image x="626" y="74" width="64" height="64" xlink:href="" /></a>
     return `
     <a xlink:href="https://github.com/${name}" class="badges-contributor-svg" target="_blank" id="${name}">
-      <image x="${px}" y="${py}" width="${s}" height="${s}" xlink:href="${avatar}" />
+      <image x="${px}" y="${py}" width="${s}" height="${s}" xlink:href="${avatar_data}" />
     </a>
     `;
   });
