@@ -102,5 +102,6 @@ export default async (req: NowRequest, res: NowResponse) => {
   `;
 
   res.setHeader('content-type', 'image/svg+xml; charset=utf-8');
+  res.setHeader('Accept-Encoding', 'gzip');
   return res.status(200).send(content);
 };
