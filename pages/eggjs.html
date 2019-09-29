@@ -1,46 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <meta name="referrer" content="always">
-  <link rel="stylesheet" href="https://unpkg.com/normalize.css@8.0.1/normalize.css">
-  <title>Ergate.js - Badges</title>
-  <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-    }
-
-    .container {
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Egg.js - Contributors</title>
+    <meta name="description" content="Born to build better enterprise frameworks and apps.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/3.0.1/github-markdown.css">
+    <style>
+    .markdown-body {
+  		box-sizing: border-box;
       width: 100%;
       max-width: 1280px;
       margin: 0 auto;
-      padding-top: 2em;
+      padding: 2em 1em;
     }
 
-    .container .title {
-      border-bottom: 1px solid #e8e8e8;
-      padding: 1em 0;
-    }
-
-    .container .contributors {
+    .markdown-body .contributors {
       width: 1280px;
       max-width: 100%;
-      margin: 0 auto;
     }
-  </style>
-</head>
 
-<body>
-  <div class="container">
-    <h3 class="title">Egg.js Contributors</h2>
-    <embed class="contributors" src="https://badges.implements.io/api/contributors?org=eggjs&repo=egg&width=1280" alt="contributors" />
-    <!-- <embed class="contributors" src="http://localhost:3000/api/contributors?org=eggjs&repo=egg&width=1280" alt="contributors" /> -->
-  </div>
-</body>
+  	@media (max-width: 767px) {
+  	}
+    </style>
+  </head>
+  <body>
+    <article class="markdown-body">
+      <h1>Egg.js</h1>
+<blockquote>
+<p>Born to build better enterprise frameworks and apps.</p>
+</blockquote>
+<h2>Contributors</h2>
+<embed class="contributors" src="http://localhost:3000/api/contributors?org=eggjs&repo=egg&width=1280" alt="contributors" />
+<!-- <embed class="contributors" src="https://badges.implements.io/api/contributors?org=eggjs&repo=egg&width=1280" alt="contributors" /> -->
 
-</html>
+    </article>
+  </body>
+  </html>
+  
