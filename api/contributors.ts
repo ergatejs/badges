@@ -1,114 +1,44 @@
-import Jimp from 'jimp';
-import * as urllib from 'urllib';
-import Octokit = require('@octokit/rest');
 import { NowRequest, NowResponse } from '@now/node';
+import { render, validateHead } from '../lib/utils';
+import { fetchAvatar, fetchUsers, putObject, headObject, getObject } from '../lib/curl';
 
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-
-const octokit = new Octokit({
-  auth: GITHUB_TOKEN,
-});
-
-const calcGrid = (width: number, size: number, padding: number, length: number) => {
-  if (!width) {
-    return [ 1, 1 ];
-  }
-  const cols = Math.floor(width / (size + padding));
-  const rows = Math.ceil(length / cols);
-  return [ cols, rows ];
-};
-
-const fetchUsers = async (owner: string, repo: string) => {
-  const per_page = 100;
-  let page = 1;
-  let more = true;
-  let users: Array<any> = [];
-
-  while (more) {
-    const { data } = await octokit.repos.listContributors({
-      owner,
-      repo,
-      page,
-      per_page,
-    });
-    users = users.concat(data);
-
-    if (data.length === 0) {
-      more = false;
-    } else {
-      page++;
-    }
-  }
-
-  return users
-    .sort((a, b) => {
-      return b.contributions - a.contributions;
-    })
-    .map((contributor: any) => {
-      const { login, avatar_url } = contributor;
-      return {
-        name: login,
-        avatar_url,
-      };
-    });
-};
-
-const fetchAvatar = async (users: Array<any>, size: number) => {
-  return Promise.all(users.map(async ({ name, avatar_url }) => {
-    const { data } = await urllib.request(avatar_url, { timeout: 60000 });
-    const orginal = await Jimp.read(data);
-    const resized = await orginal.resize(size, size).getBase64Async(Jimp.MIME_PNG);
-
-    return {
-      name,
-      avatar_url,
-      avatar_data: resized,
-    };
-  }));
-};
+const STORAGE_PREFIX = process.env.STORAGE_PREFIX || 'contributors';
 
 export default async (req: NowRequest, res: NowResponse) => {
-  const { org = 'eggjs', repo = 'egg', owner = 'eggjs', width = 216, padding = 8, size = 64 } = req.query;
+  const { repo = 'egg', org = 'eggjs', owner = 'eggjs', size = 64, width = 216, padding = 8 } = req.query;
 
   if (!owner || !org || !repo) {
     res.status(401).send('owner | organization | repo is missing!');
   }
 
-  const w = Number(width);
-  const p = Number(padding);
-  const s = Number(size);
+  const prefix = org || owner;
+  const key = `${STORAGE_PREFIX}/${prefix}/${repo}.svg`;
+  const head = await headObject(key);
 
-  const users = await fetchUsers((org || owner) as string, repo as string);
-  const links = await fetchAvatar(users, s);
-  const [ cols, rows ] = calcGrid(w, s, p, users.length);
+  let content;
+  let cached = false;
 
-  const h = rows * (s + p);
+  if (validateHead(head)) {
+    const badge = await getObject(key);
 
-  const hrefs = links.map(({ name, avatar_data }, index) => {
-    const x = index % cols;
-    const y = Math.floor(index / cols);
-    const px = s * x + p * (x + 1);
-    const py = s * y + p * (y + 1);
+    cached = true;
+    content = badge && badge.content;
+  } else {
+    const w = Number(width);
+    const s = Number(size);
+    const p = Number(padding);
 
-    // <a xlink:href="https://github.com/dependabot[bot]" class="opencollective-svg" target="_blank" id="dependabot[bot]"><image x="626" y="74" width="64" height="64" xlink:href="" /></a>
-    return `
-    <a xlink:href="https://github.com/${name}" class="badges-contributor-svg" target="_blank" id="${name}">
-      <image x="${px}" y="${py}" width="${s}" height="${s}" xlink:href="${avatar_data}" />
-    </a>
-    `;
-  });
+    const users = await fetchUsers(prefix as string, repo as string);
+    const links = await fetchAvatar(users, s);
 
-  // render
-  const content = `<?xml version="1.0" encoding="UTF-8"?>
-  <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Badges Services - https://badges.implements.io -->
-    <title>Contributors</title>
-    <style>.badges-contributor-svg { cursor: pointer; }</style>
-    ${hrefs.join('')}
-  </svg>
-  `;
+    content = render(links, { w, s, p });
+
+    await putObject(key, Buffer.from(content));
+  }
 
   res.setHeader('content-type', 'image/svg+xml; charset=utf-8');
   res.setHeader('Accept-Encoding', 'gzip');
+  res.setHeader('x-ergatejs-cache', cached ? 'HIT' : 'MISSING');
+
   return res.status(200).send(content);
 };
