@@ -8,7 +8,7 @@
 
 ## Contributors
 
-<embed class="contributors" src="https://badges.implements.io/api/contributors?org=ergatejs&repo=badges&width=1280" alt="contributors" />
+[![contributors](https://badges.implements.io/api/contributors?org=ergatejs&repo=badges&width=1280)](https://github.com/ergatejs/badges/graphs/contributors)
 
 ## License
 
