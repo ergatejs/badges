@@ -80,10 +80,10 @@ export const headObject = async (key: string) => {
   }
 };
 
-export const putObject = async (key: string, data: string | Buffer) => {
+export const putObject = async (key: string, data: string | Buffer, mime: string) => {
   try {
     const info = await client.put(key, data, {
-      mime: 'image/svg+xml',
+      mime,
       meta: {
         uid: 0,
         pid: Date.now(),
