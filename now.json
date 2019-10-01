@@ -8,8 +8,5 @@
     "BUCKET_DOMAIN": "@bucket_domain",
     "GITHUB_TOKEN": "@github_token",
     "STORAGE_PREFIX": "@storage_prefix"
-  },
-  "engines": {
-    "node": "10.x"
   }
 }
