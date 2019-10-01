@@ -1,6 +1,6 @@
 import { getType } from 'mime';
 import { NowRequest, NowResponse } from '@now/node';
-import { render, validateHead } from '../lib/utils';
+import { render, validateHead, convertFormat } from '../lib/utils';
 import { fetchAvatar, fetchUsers, putObject, headObject, generateObjectUrl } from '../lib/curl';
 
 const STORAGE_PREFIX = process.env.STORAGE_PREFIX || 'badges/contributors';
@@ -18,8 +18,7 @@ export default async (req: NowRequest, res: NowResponse) => {
 
   let cached = false;
 
-  // TODO: support convert image type
-  const contentType = getType('svg') || getType(type as string) || 'text/plain';
+  const contentType = getType(type as string) || 'text/plain';
   const valid = validateHead(head);
 
   if (!valid) {
@@ -30,9 +29,10 @@ export default async (req: NowRequest, res: NowResponse) => {
     const users = await fetchUsers(prefix as string, repo as string);
     const links = await fetchAvatar(users, s);
 
-    const content = render(links, { w, s, p });
+    const svg = render(links, { w, s, p });
+    const buf = await convertFormat(svg, type as string);
 
-    await putObject(key, Buffer.from(content), contentType);
+    await putObject(key, buf, contentType);
   } else {
     cached = true;
   }

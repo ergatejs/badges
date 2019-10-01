@@ -1,4 +1,5 @@
 {
+  "name": "badges",
   "env": {
     "ACCESS_KEY_ID": "@access_key_id",
     "ACCESS_KEY_SECRET": "@access_key_secret",
@@ -7,5 +8,8 @@
     "BUCKET_DOMAIN": "@bucket_domain",
     "GITHUB_TOKEN": "@github_token",
     "STORAGE_PREFIX": "@storage_prefix"
+  },
+  "engines": {
+    "node": "10.x"
   }
 }

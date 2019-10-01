@@ -1,3 +1,21 @@
+import sharp = require('sharp');
+
+export const convertFormat = async (src: string, type: string) => {
+  const buf = Buffer.from(src);
+
+  let data = buf;
+
+  if (type === 'png') {
+    data = await sharp(buf).png().toBuffer();
+  }
+
+  if (type === 'jpeg') {
+    data = await sharp(buf).jpeg().toBuffer();
+  }
+
+  return data;
+};
+
 export const validateHead = (head: any) => {
   if (!head || !head.meta || !head.meta.pid) {
     return;

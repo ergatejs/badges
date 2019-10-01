@@ -1,5 +1,5 @@
 import * as urllib from 'urllib';
-import Jimp from 'jimp';
+import sharp = require('sharp');
 import OSS = require('ali-oss');
 import Octokit = require('@octokit/rest');
 
@@ -25,13 +25,13 @@ export const fetchAvatar = async (users: Array<any>, size: number) => {
   return Promise.all(
     users.map(async ({ name, avatar_url }) => {
       const { data } = await urllib.request(avatar_url, { timeout: 60000 });
-      const orginal = await Jimp.read(data);
-      const resized = await orginal.resize(size, size).getBase64Async(Jimp.MIME_PNG);
+      const resized = await sharp(data).resize(size, size).png().toBuffer();
+      const avatar_data = `data:image/png;base64,${resized.toString('base64')}`;
 
       return {
         name,
         avatar_url,
-        avatar_data: resized,
+        avatar_data,
       };
     })
   );
