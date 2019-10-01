@@ -43,10 +43,9 @@ export const render = (links: Array<any>, pos: IPosition) => {
   });
 
   // render
-  const content = `<?xml version="1.0" encoding="UTF-8"?>
+  const content = `
   <svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Badges Services - https://badges.implements.io -->
-    <title>Contributors</title>
     <style>.badges-contributor-svg { cursor: pointer; }</style>
     ${hrefs.join('')}
   </svg>
