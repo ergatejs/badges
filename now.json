@@ -3,6 +3,7 @@
     "GITHUB_TOKEN": "@github_token",
     "BUCKET_NAME": "@bucket_name",
     "BUCKET_REGION": "@bucket_region",
+    "BUCKET_DOMAIN": "@bucket_domain",
     "ACCESS_KEY_ID": "@access_key_id",
     "ACCESS_KEY_SECRET": "@access_key_secret"
   }

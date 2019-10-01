@@ -6,6 +6,7 @@ import Octokit = require('@octokit/rest');
 const ACCESS_KEY_ID = process.env.ACCESS_KEY_ID || '';
 const ACCESS_KEY_SECRET = process.env.ACCESS_KEY_SECRET || '';
 const BUCKET_NAME = process.env.BUCKET_NAME || '';
+const BUCKET_DOMAIN = process.env.BUCKET_DOMAIN;
 const BUCKET_REGION = process.env.BUCKET_REGION;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
@@ -75,6 +76,15 @@ export const headObject = async (key: string) => {
   try {
     const cache = await client.head(key);
     return cache;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const generateObjectUrl = async (key: string, baseUrl: string | undefined = BUCKET_DOMAIN) => {
+  try {
+    const url = await client.generateObjectUrl(key, baseUrl);
+    return url;
   } catch (error) {
     return null;
   }
