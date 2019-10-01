@@ -6,7 +6,7 @@ import { fetchAvatar, fetchUsers, putObject, headObject, generateObjectUrl } fro
 const STORAGE_PREFIX = process.env.STORAGE_PREFIX || 'badges/contributors';
 
 export default async (req: NowRequest, res: NowResponse) => {
-  const { repo = 'egg', org = 'eggjs', owner = 'eggjs', size = 64, width = 216, padding = 8, type = 'svg' } = req.query;
+  const { repo = 'egg', org = 'eggjs', owner = 'eggjs', size = 64, width = 216, padding = 8, type = 'svg', bg = 'white' } = req.query;
 
   if (!owner || !org || !repo) {
     res.status(401).send('owner | organization | repo is missing!');
@@ -30,7 +30,7 @@ export default async (req: NowRequest, res: NowResponse) => {
     const links = await fetchAvatar(users, s);
 
     const svg = render(links, { w, s, p });
-    const buf = await convertFormat(svg, type as string);
+    const buf = await convertFormat(svg, type as string, bg as string);
 
     await putObject(key, buf, contentType);
   } else {

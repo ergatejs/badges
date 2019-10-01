@@ -1,16 +1,36 @@
 import sharp = require('sharp');
 
-export const convertFormat = async (src: string, type: string) => {
+const COLORS = {
+  WHITE: {
+    r: 255,
+    g: 255,
+    b: 255,
+  },
+  BLACK: {
+    r: 0,
+    g: 0,
+    b: 0,
+  },
+};
+
+export const convertFormat = async (src: string, type: string, bg: string) => {
   const buf = Buffer.from(src);
 
   let data = buf;
 
   if (type === 'png') {
-    data = await sharp(buf).png().toBuffer();
+    data = await sharp(buf)
+      .png()
+      .toBuffer();
   }
 
   if (type === 'jpeg') {
-    data = await sharp(buf).jpeg().toBuffer();
+    const flattenOptions = bg === 'white' ? { background: COLORS.WHITE } : { background: COLORS.BLACK };
+
+    data = await sharp(buf)
+      .flatten(flattenOptions)
+      .jpeg()
+      .toBuffer();
   }
 
   return data;
@@ -44,7 +64,7 @@ export const calcGrid = (width: number, size: number, padding: number, length: n
 export const render = (links: Array<any>, pos: IPosition) => {
   const { w, s, p } = pos;
   const [ cols, rows ] = calcGrid(w, s, p, links.length);
-  const h = rows * (s + p);
+  const h = rows * (s + p) + p;
 
   const hrefs = links.map(({ name, avatar_data }, index) => {
     const x = index % cols;

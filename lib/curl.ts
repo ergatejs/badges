@@ -25,7 +25,8 @@ export const fetchAvatar = async (users: Array<any>, size: number) => {
   return Promise.all(
     users.map(async ({ name, avatar_url }) => {
       const { data } = await urllib.request(avatar_url, { timeout: 60000 });
-      const resized = await sharp(data).resize(size, size).png().toBuffer();
+      const resized = await sharp(data).resize(size, size).png()
+        .toBuffer();
       const avatar_data = `data:image/png;base64,${resized.toString('base64')}`;
 
       return {
