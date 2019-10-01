@@ -3,7 +3,7 @@ import { NowRequest, NowResponse } from '@now/node';
 import { render, validateHead } from '../lib/utils';
 import { fetchAvatar, fetchUsers, putObject, headObject, generateObjectUrl } from '../lib/curl';
 
-const STORAGE_PREFIX = process.env.STORAGE_PREFIX || 'contributors';
+const STORAGE_PREFIX = process.env.STORAGE_PREFIX || 'badges/contributors';
 
 export default async (req: NowRequest, res: NowResponse) => {
   const { repo = 'egg', org = 'eggjs', owner = 'eggjs', size = 64, width = 216, padding = 8, type = 'svg' } = req.query;
