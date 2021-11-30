@@ -98,3 +98,4 @@ public
 .dynamodb/
 
 yarn.lock*
+.vercel

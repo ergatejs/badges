@@ -1,11 +1,11 @@
 import { getType } from 'mime';
-import { NowRequest, NowResponse } from '@now/node';
+import { VercelRequest, VercelResponse } from '@vercel/node';
 import { render, validateHead, convertFormat } from '../lib/utils';
 import { fetchAvatar, fetchUsers, putObject, headObject, generateObjectUrl } from '../lib/curl';
 
 const STORAGE_PREFIX = process.env.STORAGE_PREFIX || 'badges/contributors';
 
-export default async (req: NowRequest, res: NowResponse) => {
+export default async (req: VercelRequest, res: VercelResponse) => {
   const { repo = 'egg', org = 'eggjs', owner = 'eggjs', size = 64, width = 216, padding = 8, type = 'svg', bg = 'white' } = req.query;
 
   if (!owner || !org || !repo) {
