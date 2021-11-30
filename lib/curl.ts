@@ -1,7 +1,7 @@
 import * as urllib from 'urllib';
 import sharp = require('sharp');
 import OSS = require('ali-oss');
-import Octokit = require('@octokit/rest');
+const { Octokit } = require("@octokit/rest")
 
 const ACCESS_KEY_ID = process.env.ACCESS_KEY_ID || '';
 const ACCESS_KEY_SECRET = process.env.ACCESS_KEY_SECRET || '';
