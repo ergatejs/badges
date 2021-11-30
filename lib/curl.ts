@@ -1,7 +1,7 @@
 import * as urllib from 'urllib';
 import sharp = require('sharp');
 import OSS = require('ali-oss');
-const { Octokit } = require("@octokit/rest")
+import { Octokit } from 'octokit';
 
 const ACCESS_KEY_ID = process.env.ACCESS_KEY_ID || '';
 const ACCESS_KEY_SECRET = process.env.ACCESS_KEY_SECRET || '';
@@ -45,7 +45,7 @@ export const fetchUsers = async (owner: string, repo: string) => {
   let users: Array<any> = [];
 
   while (more) {
-    const { data } = await octokit.repos.listContributors({
+    const { data } = await octokit.rest.repos.listContributors({
       owner,
       repo,
       page,
