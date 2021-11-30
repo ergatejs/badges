@@ -1,14 +1,17 @@
 import * as urllib from 'urllib';
+import { Octokit } from 'octokit';
+
 import sharp = require('sharp');
 import OSS = require('ali-oss');
-import { Octokit } from 'octokit';
 
 const ACCESS_KEY_ID = process.env.ACCESS_KEY_ID || '';
 const ACCESS_KEY_SECRET = process.env.ACCESS_KEY_SECRET || '';
 const BUCKET_NAME = process.env.BUCKET_NAME || '';
 const BUCKET_DOMAIN = process.env.BUCKET_DOMAIN;
 const BUCKET_REGION = process.env.BUCKET_REGION;
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN_OCKOKIT;
+
+console.log('GITHUB_TOKEN', GITHUB_TOKEN);
 
 const octokit = new Octokit({
   auth: GITHUB_TOKEN,
