@@ -11,8 +11,6 @@ const BUCKET_DOMAIN = process.env.BUCKET_DOMAIN;
 const BUCKET_REGION = process.env.BUCKET_REGION;
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN_OCKOKIT;
 
-console.log('GITHUB_TOKEN', GITHUB_TOKEN);
-
 const octokit = new Octokit({
   auth: GITHUB_TOKEN,
 });
@@ -27,7 +25,7 @@ const client = new OSS({
 export const fetchAvatar = async (users: Array<any>, size: number) => {
   return Promise.all(
     users.map(async ({ name, avatar_url }) => {
-      const { data } = await urllib.request(avatar_url, { timeout: 60000 });
+      const { data } = await urllib.request(`${avatar_url}&s=${size}`, { timeout: 60 * 1000 });
       const resized = await sharp(data).resize(size, size).png()
         .toBuffer();
       const avatar_data = `data:image/png;base64,${resized.toString('base64')}`;
