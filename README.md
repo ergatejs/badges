@@ -4,11 +4,15 @@
 
 ## Pages
 
+how to refresh cache?
+
+> add refresh=oss to query params.
+
 - [Egg.js Contributors](/pages/eggjs.html)
 
 ## Contributors
 
-[![contributors](https://badges.implements.io/api/contributors?org=ergatejs&repo=badges&width=1280&size=48&padding=6)](https://github.com/ergatejs/badges/graphs/contributors)
+[![contributors](https://ergatejs.implements.io/badges/contributors/ergatejs/badges.svg?owner=ergatejs&repo=badges&size=48)](https://github.com/ergatejs/badges/graphs/contributors)
 
 ## License
 
