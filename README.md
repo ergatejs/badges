@@ -2,9 +2,16 @@
 
 > Badges for open source projects powered by Serverless Functions (Zeit).
 
+- [Generator](https://console.implements.io/badge)
+
 ## Pages
 
-- [Egg.js Contributors](/pages/eggjs.html)
+- [egg.js](/pages/eggjs.html)
+
+## Projects
+
+- [egg](https://github.com/eggjs/egg)
+- [cnpmcore](https://github.com/cnpm/cnpmcore)
 
 ## Contributors
 
